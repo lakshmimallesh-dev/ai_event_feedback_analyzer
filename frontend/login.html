@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Login | EventInsight AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="login-wrapper">
+
+    <div class="login-card">
+
+        <h2 id="typingText"></h2>
+        <p class="subtitle">Access dashboard & insights</p>
+
+        <div class="field">
+            <input type="text" id="username" required placeholder="Username">
+        </div>
+
+        <div class="field password-field">
+            <input type="password" id="password" required placeholder="Password">
+            <span onclick="togglePassword()">👁</span>
+        </div>
+
+        <button id="loginBtn" onclick="login()">Login</button>
+
+    </div>
+
+</div>
+
+<script>
+/* FIXED typing */
+const text = "⚡ Admin Login";
+let i = 0;
+
+function typeEffect() {
+    if (i <= text.length) {
+        document.getElementById("typingText").innerText = text.substring(0, i);
+        i++;
+        setTimeout(typeEffect, 60);
+    }
+}
+typeEffect();
+
+/* toggle */
+function togglePassword() {
+    const p = document.getElementById("password");
+    p.type = p.type === "password" ? "text" : "password";
+}
+
+/* button */
+function login() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const btn = document.getElementById("loginBtn");
+
+    btn.innerText = "Logging in...";
+    btn.disabled = true;
+
+    // simple auth (you can change later)
+    if (username === "admin" && password === "1234") {
+
+        localStorage.setItem("isLoggedIn", "true");
+
+        setTimeout(() => {
+            window.location.href = "dashboard.html";
+        }, 1000);
+
+    } else {
+        setTimeout(() => {
+            alert("Invalid credentials ❌");
+            btn.innerText = "Login";
+            btn.disabled = false;
+        }, 1000);
+    }
+}
+</script>
+
+</body>
+</html>

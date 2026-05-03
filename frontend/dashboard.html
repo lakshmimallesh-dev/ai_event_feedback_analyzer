@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+    <div class="logo">⚡ EventInsight AI</div>
+
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="feedback.html">Feedback</a>
+        <a href="login.html" class="active">Admin</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- ===== SIDEBAR ===== -->
+    <div class="sidebar">
+        <h2>⚡ Dashboard</h2>
+        <a href="dashboard.html" class="active">📊 Overview</a>
+        <a href="feedback.html">📝 Feedback</a>
+    </div>
+
+    <!-- LOGIN CHECK -->
+    <script>
+        if (localStorage.getItem("isLoggedIn") !== "true") {
+            window.location.href = "login.html";
+        }
+    </script>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main">
+
+        <!-- HEADER -->
+        <div class="header-row">
+            <h2>Admin Dashboard</h2>
+
+            <div class="filter-box">
+                <label>Select Event</label>
+                <select id="eventFilter">
+                    <option value="all">All Events</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ===== CARDS ===== -->
+        <div class="cards">
+            <div class="card glow">
+                <h3>Total Feedback</h3>
+                <p id="total">0</p>
+            </div>
+
+            <div class="card glow green">
+                <h3>Positive</h3>
+                <p id="positive">0</p>
+            </div>
+
+            <div class="card glow red">
+                <h3>Negative</h3>
+                <p id="negative">0</p>
+            </div>
+        </div>
+
+        <!-- ===== AI INSIGHTS GRID ===== -->
+        <div class="insights-grid">
+
+            <div class="box">
+                <h3>🤖 AI Suggestions</h3>
+                <ul id="suggestionList"></ul>
+            </div>
+
+            <div class="box">
+                <h3>🧠 AI Summary</h3>
+                <p id="aiSummary">Loading insights...</p>
+            </div>
+
+            <div class="box">
+                <h3>🔮 Event Prediction</h3>
+                <p>Success Rate: <span id="successRate">--</span></p>
+                <p>Prediction: <span id="predictionText">--</span></p>
+                <p>Confidence: <span id="confidenceLevel">--</span></p>
+            </div>
+
+        </div>
+
+        <!-- ===== CHART ===== -->
+        <div class="chart-card">
+    <div class="chart-box">
+        <canvas id="sentimentChart"></canvas>
+    </div>
+</div>
+
+        <!-- ===== ACTION BUTTON ===== -->
+        <button onclick="exportCSV()" class="export-btn">
+            ⬇ Export CSV
+        </button>
+
+        <!-- ===== TABLE ===== -->
+        <div class="table-wrapper">
+            <table id="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Event</th>
+                        <th>Rating</th>
+                        <th>Comment</th>
+                        <th>Sentiment</th>
+                        <th>Keywords</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+window.addEventListener("load", () => {
+    document.body.classList.add("loaded");
+});
+</script>
+
+</body>
+</html>

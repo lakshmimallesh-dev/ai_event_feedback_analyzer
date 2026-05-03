@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Feedback</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+    <body>
+
+<div class="bg-glow"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo">⚡ EventInsight AI</div>
+
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="feedback.html" class="active">Feedback</a>
+        <a href="login.html">Admin</a>
+    </div>
+</nav>
+
+<!-- FEEDBACK FORM -->
+<div class="form-wrapper">
+
+    <div class="form-card">
+        <h2>📝 Submit Feedback</h2>
+<p>Help us improve events using AI insights</p>
+
+<form id="feedbackForm" class="modern-form">
+
+    <div class="input-group">
+        <input type="text" id="name" required>
+        <label>Your Name</label>
+    </div>
+
+    <div class="input-group">
+        <select id="event" required>
+            <option value="" disabled selected hidden></option>
+            <option value="Tech Fest">Tech Fest</option>
+            <option value="Cultural Fest">Cultural Fest</option>
+            <option value="Hackathon">Hackathon</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Other">Other</option>
+        </select>
+        <label>Select Event</label>
+    </div>
+
+    <div class="input-group" id="customEventBox" style="display:none;">
+        <input type="text" id="customEvent">
+        <label>Custom Event Name</label>
+    </div>
+
+    <!-- ⭐ STAR RATING -->
+    <div class="rating-box">
+        <label>Rate Event</label>
+        <div class="stars">
+            <span data-value="1">⭐</span>
+            <span data-value="2">⭐</span>
+            <span data-value="3">⭐</span>
+            <span data-value="4">⭐</span>
+            <span data-value="5">⭐</span>
+        </div>
+        <input type="hidden" id="rating">
+    </div>
+
+    <div class="input-group">
+        <textarea id="comment" required></textarea>
+        <label>Your Feedback</label>
+    </div>
+
+    <button type="submit" class="submit-btn">
+        🚀 Submit Feedback
+    </button>
+
+</form>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
