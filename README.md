@@ -82,20 +82,21 @@ It automatically:
 ---
 
 ## 📂 Project Structure
+
+```bash
 event_feedback_ai/
-│
 ├── backend/
-│ ├── main.py
-│ ├── suggestions.py
-│ ├── sentiment.py
+│   ├── main.py              # FastAPI backend
+│   ├── suggestions.py       # AI suggestions logic
+│   └── sentiment.py         # Sentiment analysis
 │
 ├── frontend/
-│ ├── index.html
-│ ├── dashboard.html
-│ ├── login.html
-│ ├── feedback.html
-│ ├── style.css
-│ ├── script.js
+│   ├── index.html           # Home page
+│   ├── dashboard.html       # Admin dashboard
+│   ├── login.html           # Admin login
+│   ├── feedback.html        # Feedback form
+│   ├── style.css            # UI styling
+│   └── script.js            # Frontend logic
 │
 └── README.md
 
