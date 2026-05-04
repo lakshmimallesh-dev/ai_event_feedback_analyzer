@@ -1,4 +1,5 @@
 // ================= BASIC FUNCTIONS =================
+const BASE_URL = "http://127.0.0.1:8000";
 let currentEvent = "all";
 function goToFeedback() {
     window.location.href = "feedback.html";
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             try {
-                const response = await fetch("https://eventinsight-ai.onrender.com/submit", {
+                const response = await fetch(`${BASE_URL}/submit`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data)
@@ -53,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const result = await response.json();
 
-                alert("✅ Feedback Submitted! Sentiment: " + result.sentiment);
+                alert("✅ Feedback Submitted!");
                 form.reset();
 
             } catch (err) {
@@ -90,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 try {
-                    const response = await fetch("https://eventinsight-ai.onrender.com/analyze", {
+                    const response = await fetch(`${BASE_URL}/analyze`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ comment: text })
@@ -169,7 +170,7 @@ async function loadData() {
     try {
         allData = [];
 
-        const response = await fetch("https://eventinsight-ai.onrender.com/feedback");
+        const response = await fetch(`${BASE_URL}/feedback`);
         allData = await response.json();
 
         populateDropdown();
@@ -186,7 +187,7 @@ async function loadData() {
 // ================= EVENTS DROPDOWN =================
 
 async function loadEvents() {
-    const response = await fetch("https://eventinsight-ai.onrender.com/feedback");
+    const response = await fetch(`${BASE_URL}/feedback`);
     const data = await response.json();
 
     const dropdown = document.getElementById("event");
@@ -300,7 +301,7 @@ async function loadAIPanels(selectedEvent) {
     document.getElementById("confidenceLevel").innerText = "...";
 
     // ===== SUMMARY =====
-    const summary = await safeFetch(`https://eventinsight-ai.onrender.com/summary?event=${selectedEvent}`);
+    const summary = await safeFetch(`${BASE_URL}/summary?event=${selectedEvent}`);
     if (currentEvent !== requestEvent) return;
 
     if (summary && summary.summary) {
@@ -310,7 +311,7 @@ async function loadAIPanels(selectedEvent) {
     }
 
     // ===== PREDICTION =====
-    const prediction = await safeFetch(`https://eventinsight-ai.onrender.com/predict?event=${selectedEvent}`);
+    const prediction = await safeFetch(`${BASE_URL}/predict?event=${selectedEvent}`);
     if (currentEvent !== requestEvent) return;
 
     if (prediction) {
@@ -333,7 +334,7 @@ async function loadAIPanels(selectedEvent) {
     }
 
     // ===== SUGGESTIONS =====
-    const suggestions = await safeFetch(`https://eventinsight-ai.onrender.com/suggestions?event=${selectedEvent}`);
+    const suggestions = await safeFetch(`${BASE_URL}/suggestions?event=${selectedEvent}`);
     if (currentEvent !== requestEvent) return;
 
     const suggestionList = document.getElementById("suggestionList");
@@ -348,7 +349,7 @@ async function loadAIPanels(selectedEvent) {
     }
 
     // ===== INSIGHTS =====
-    const insights = await safeFetch(`https://eventinsight-ai.onrender.com/event-insights?event=${selectedEvent}`);
+    const insights = await safeFetch(`${BASE_URL}/event-insights?event=${selectedEvent}`);
     if (currentEvent !== requestEvent) return;
 
     if (insights) {
@@ -417,27 +418,34 @@ function exportCSV() {
     a.download = "feedback.csv";
     a.click();
 }
-document.getElementById("event").addEventListener("change", function () {
-    const customBox = document.getElementById("customEventBox");
+const eventEl = document.getElementById("event");
 
-    if (this.value === "Other") {
-        customBox.style.display = "block";
-    } else {
-        customBox.style.display = "none";
-    }
-});
+if (eventEl) {
+    eventEl.addEventListener("change", function () {
+        const customBox = document.getElementById("customEventBox");
+
+        if (this.value === "Other") {
+            customBox.style.display = "block";
+        } else {
+            customBox.style.display = "none";
+        }
+    });
+}
+
 const stars = document.querySelectorAll(".stars span");
 const ratingInput = document.getElementById("rating");
 
-stars.forEach(star => {
-    star.addEventListener("click", () => {
-        let val = star.getAttribute("data-value");
-        ratingInput.value = val;
+if (stars.length > 0 && ratingInput) {
+    stars.forEach(star => {
+        star.addEventListener("click", () => {
+            let val = star.getAttribute("data-value");
+            ratingInput.value = val;
 
-        stars.forEach(s => s.classList.remove("active"));
+            stars.forEach(s => s.classList.remove("active"));
 
-        for (let i = 0; i < val; i++) {
-            stars[i].classList.add("active");
-        }
+            for (let i = 0; i < val; i++) {
+                stars[i].classList.add("active");
+            }
+        });
     });
-});
+}

@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from database import Base
+from pydantic import BaseModel
+
 
 class Feedback(Base):
     __tablename__ = "feedback"
@@ -11,3 +13,9 @@ class Feedback(Base):
     comment = Column(String)
     sentiment = Column(String)
     keywords = Column(String)
+
+class FeedbackCreate(BaseModel):
+    name: str
+    event: str
+    rating: int
+    comment: str

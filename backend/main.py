@@ -11,6 +11,13 @@ from ai.suggestions import generate_summary
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+from models import FeedbackCreate
+import os
+from fastapi import Depends
+from sqlalchemy.orm import Session
+from models import Feedback
+from ai.suggestions import generate_suggestions
+print("DB PATH:", os.path.abspath("feedback.db"))
 
 app = FastAPI()
 
@@ -48,29 +55,26 @@ Base.metadata.create_all(bind=engine)
 def home():
     return {"message": "Server running successfully"}
 @app.post("/submit")
-def submit_feedback(data: dict, db: Session = Depends(get_db)):
+def submit_feedback(feedback: FeedbackCreate, db: Session = Depends(get_db)):
+    
+    print("🔥 API HIT:", feedback)   # ADD THIS
 
-    sentiment = get_sentiment(data["comment"])
-    keywords = extract_keywords(data["comment"])
-
-    feedback = Feedback(
-        name=data["name"],
-        event=data["event"],
-        rating=data["rating"],
-        comment=data["comment"],
-        sentiment=sentiment,
-        keywords=keywords
+    new_feedback = Feedback(
+        name=feedback.name,
+        event=feedback.event,
+        rating=feedback.rating,
+        comment=feedback.comment,
+        sentiment=get_sentiment(feedback.comment),
+        keywords=extract_keywords(feedback.comment)
     )
 
-    db.add(feedback)
+    db.add(new_feedback)
     db.commit()
+    db.refresh(new_feedback)
 
-    return {
-        "message": "Feedback saved",
-        "sentiment": sentiment,
-        "keywords": keywords
-    }
-print("📦 Loading database...")
+    print("✅ SAVED TO DB")   # ADD THIS
+
+    return {"message": "Feedback saved"}
 @app.get("/feedback")
 def get_feedback(db: Session = Depends(get_db)):
     data = db.query(Feedback).all()
@@ -90,15 +94,18 @@ def get_feedback(db: Session = Depends(get_db)):
     return result
 
 @app.get("/suggestions")
-def get_suggestions(event: str = None, db: Session = Depends(get_db)):
-    if event and event != "all":
-        data = db.query(Feedback).filter(Feedback.event == event).all()
+def get_suggestions(event: str = "all"):
+    db = SessionLocal()
+
+    if event == "all":
+        feedbacks = db.query(Feedback).all()
     else:
-        data = db.query(Feedback).all()
+        feedbacks = db.query(Feedback).filter(Feedback.event == event).all()
+    result = generate_suggestions(feedbacks)
 
-    suggestions = generate_suggestions(data)
+    db.close()
 
-    return {"suggestions": suggestions}
+    return {"suggestions": result}
 
 @app.post("/analyze")
 def analyze_feedback(data: dict):
@@ -117,22 +124,10 @@ def summary(event: str = None, db: Session = Depends(get_db)):
     else:
         data = db.query(Feedback).all()
 
-    if not data:
-        return {"summary": None}
-
-    avg_rating = sum([d.rating for d in data]) / len(data)
-
-    sentiments = [d.sentiment for d in data]
-
-    if sentiments.count("positive") > sentiments.count("negative"):
-        sentiment = "positive"
-    elif sentiments.count("negative") > sentiments.count("positive"):
-        sentiment = "negative"
-    else:
-        sentiment = "neutral"
+    summary_text = generate_summary(data)
 
     return {
-        "summary": f"Overall sentiment is {sentiment}. Average rating is {round(avg_rating,1)}."
+        "summary": summary_text
     }
 
 

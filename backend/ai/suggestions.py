@@ -1,21 +1,55 @@
 from collections import Counter
 
 def generate_suggestions(feedback_list):
-
     issue_keywords = []
 
-    valid_issues = ["food", "music", "management", "timing", "speaker", "laptop", "system", "network","seminar","teaching"]
+    issue_map = {
+        "food": "food",
+        "music": "music",
+        "management": "management",
+        "timing": "timing",
+        "speaker": "speaker",
+
+        "laptop": "technical",
+        "system": "technical",
+        "network": "technical",
+        "wifi": "technical",
+        "projector": "technical",
+
+        "seminar": "content",
+        "teaching": "content",
+        "session": "content",
+        "presentation": "content",
+        "workshop": "content"   # ✅ ADD THIS (VERY IMPORTANT)
+    }
+
+    negative_words = ["bad", "worst", "poor", "terrible", "not", "waste", "boring"]
 
     for fb in feedback_list:
 
-        # Already filtered negative → no need to check "bad"
-        if fb.sentiment == "negative" and fb.keywords:
+        if fb.sentiment == "negative":
 
-            words = [w.strip().lower() for w in fb.keywords.split(",")]
+            text = fb.comment.lower()
+
+            # 🔥 ensure it's actually negative text
+            if not any(nw in text for nw in negative_words):
+                continue
+
+            words = text.split()
+            found_issue = False
 
             for w in words:
-                if w in valid_issues:
-                    issue_keywords.append(w)
+                clean = w.strip(".,!")
+
+                if clean in issue_map:
+                    issue_keywords.append(issue_map[clean])
+                    found_issue = True
+
+            # 🔥 fallback ALWAYS
+            if not found_issue:
+                issue_keywords.append("general")
+
+    print("DEBUG FINAL KEYWORDS:", issue_keywords)
 
     freq = Counter(issue_keywords)
 
@@ -26,18 +60,25 @@ def generate_suggestions(feedback_list):
         if word == "food":
             suggestions.append(f"Improve food quality ({count} complaints)")
         elif word == "music":
-            suggestions.append(f"Improve music experience ({count} complaints)")
+            suggestions.append(f"Enhance music experience ({count} complaints)")
         elif word == "management":
             suggestions.append(f"Improve event management ({count} complaints)")
         elif word == "timing":
-            suggestions.append(f"Improve event timing ({count} complaints)")
+            suggestions.append(f"Improve event scheduling ({count} complaints)")
         elif word == "speaker":
-            suggestions.append(f"Improve speaker quality ({count} complaints)")
+            suggestions.append(f"Enhance speaker quality ({count} complaints)")
+        elif word == "technical":
+            suggestions.append(f"Fix technical issues (WiFi, systems) ({count} complaints)")
+        elif word == "content":
+            suggestions.append(f"Improve session/workshop content ({count} complaints)")
+        elif word == "general":
+            suggestions.append(f"Improve overall event experience ({count} complaints)")
 
     if not suggestions:
         suggestions.append("No major issues detected 🎉")
 
     return suggestions
+
 
 def generate_summary(feedback_list):
 
@@ -45,12 +86,12 @@ def generate_summary(feedback_list):
         return "No feedback available yet."
 
     total = len(feedback_list)
+
     positive = sum(1 for fb in feedback_list if fb.sentiment == "positive")
     negative = sum(1 for fb in feedback_list if fb.sentiment == "negative")
 
     avg_rating = sum(fb.rating for fb in feedback_list) / total
 
-    # 🧠 AI-like interpretation
     if negative > positive:
         mood = "Overall sentiment is negative"
     elif positive > negative:
@@ -58,7 +99,6 @@ def generate_summary(feedback_list):
     else:
         mood = "Feedback is mixed"
 
-    # Rating insight
     if avg_rating >= 4:
         rating_msg = "Users are highly satisfied"
     elif avg_rating >= 2.5:
@@ -66,4 +106,4 @@ def generate_summary(feedback_list):
     else:
         rating_msg = "User satisfaction is low"
 
-    return f"{mood}. Average rating is {round(avg_rating,2)}. {rating_msg}."
+    return f"{mood}. Average rating is {round(avg_rating, 2)}. {rating_msg}."
