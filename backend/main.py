@@ -10,6 +10,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from ai.suggestions import generate_summary
 from fastapi import Depends
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_db():
     db = SessionLocal()
