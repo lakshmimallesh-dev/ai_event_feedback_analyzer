@@ -4,7 +4,7 @@ def generate_suggestions(feedback_list):
 
     issue_keywords = []
 
-    valid_issues = ["food", "music", "management", "timing", "speaker"]
+    valid_issues = ["food", "music", "management", "timing", "speaker", "laptop", "system", "network","seminar","teaching"]
 
     for fb in feedback_list:
 
