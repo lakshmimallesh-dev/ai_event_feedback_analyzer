@@ -11,7 +11,8 @@ from ai.suggestions import generate_summary
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
-
+print("🚀 Starting FastAPI app...")
+app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -27,7 +28,7 @@ def get_db():
     finally:
         db.close()
 
-app = FastAPI()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -67,6 +68,7 @@ def submit_feedback(data: dict, db: Session = Depends(get_db)):
         "sentiment": sentiment,
         "keywords": keywords
     }
+print("📦 Loading database...")
 @app.get("/feedback")
 def get_feedback(db: Session = Depends(get_db)):
     data = db.query(Feedback).all()
