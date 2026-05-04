@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             try {
-                const response = await fetch("http://127.0.0.1:8000/submit", {
+                const response = await fetch("https://eventinsight-ai.onrender.com/submit", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data)
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 try {
-                    const response = await fetch("http://127.0.0.1:8000/analyze", {
+                    const response = await fetch("https://eventinsight-ai.onrender.com/analyze", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ comment: text })
@@ -169,7 +169,7 @@ async function loadData() {
     try {
         allData = [];
 
-        const response = await fetch("http://127.0.0.1:8000/feedback");
+        const response = await fetch("https://eventinsight-ai.onrender.com/feedback");
         allData = await response.json();
 
         populateDropdown();
@@ -186,7 +186,7 @@ async function loadData() {
 // ================= EVENTS DROPDOWN =================
 
 async function loadEvents() {
-    const response = await fetch("http://127.0.0.1:8000/feedback");
+    const response = await fetch("https://eventinsight-ai.onrender.com/feedback");
     const data = await response.json();
 
     const dropdown = document.getElementById("event");
@@ -300,7 +300,7 @@ async function loadAIPanels(selectedEvent) {
     document.getElementById("confidenceLevel").innerText = "...";
 
     // ===== SUMMARY =====
-    const summary = await safeFetch(`http://127.0.0.1:8000/summary?event=${selectedEvent}`);
+    const summary = await safeFetch(`https://eventinsight-ai.onrender.com/summary?event=${selectedEvent}`);
     if (currentEvent !== requestEvent) return;
 
     if (summary && summary.summary) {
@@ -310,7 +310,7 @@ async function loadAIPanels(selectedEvent) {
     }
 
     // ===== PREDICTION =====
-    const prediction = await safeFetch(`http://127.0.0.1:8000/predict?event=${selectedEvent}`);
+    const prediction = await safeFetch(`https://eventinsight-ai.onrender.com/predict?event=${selectedEvent}`);
     if (currentEvent !== requestEvent) return;
 
     if (prediction) {
@@ -333,7 +333,7 @@ async function loadAIPanels(selectedEvent) {
     }
 
     // ===== SUGGESTIONS =====
-    const suggestions = await safeFetch(`http://127.0.0.1:8000/suggestions?event=${selectedEvent}`);
+    const suggestions = await safeFetch(`https://eventinsight-ai.onrender.com/suggestions?event=${selectedEvent}`);
     if (currentEvent !== requestEvent) return;
 
     const suggestionList = document.getElementById("suggestionList");
@@ -348,7 +348,7 @@ async function loadAIPanels(selectedEvent) {
     }
 
     // ===== INSIGHTS =====
-    const insights = await safeFetch(`http://127.0.0.1:8000/event-insights?event=${selectedEvent}`);
+    const insights = await safeFetch(`https://eventinsight-ai.onrender.com/event-insights?event=${selectedEvent}`);
     if (currentEvent !== requestEvent) return;
 
     if (insights) {
